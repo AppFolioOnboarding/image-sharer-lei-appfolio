@@ -3,11 +3,15 @@ class ImagesController < ApplicationController
     @image = Image.new
   end
 
+  def show
+    @image = Image.find(params[:id])
+  end
+
   def create
     @image = Image.new(image_params)
 
     if @image.save
-      redirect_to root_path, notice: 'Image url was successfully submitted.'
+      redirect_to @image, notice: 'Image url was successfully submitted.'
     else
       render :new, status: :unprocessable_entity
     end

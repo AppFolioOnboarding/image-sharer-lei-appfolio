@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>url:</strong>
+  <%= @image.web_url %>
+</p>
+
+<p>
+  <img src="<%= @image.web_url %>" width="300">
+</p>
+
+<%= link_to 'Back to Home', root_path %>
