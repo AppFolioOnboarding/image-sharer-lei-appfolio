@@ -2,4 +2,21 @@ class ImagesController < ApplicationController
   def new
     @image = Image.new
   end
+
+  def create
+    @image = Image.new(image_params)
+
+    if @image.save
+      redirect_to root_path, notice: 'Image url was successfully submitted.'
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  # Only allow a trusted parameter "white list" through.
+  def image_params
+    params.require(:image).permit(:web_url)
+  end
 end
