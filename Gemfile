@@ -50,3 +50,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Validate url of image submitted by users
 gem 'valid_url'
+
+gem 'simple_form'
