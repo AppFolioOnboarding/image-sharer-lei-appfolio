@@ -1,0 +1,8 @@
+<h1>New Image URL</h1>
+
+<%= simple_form_for @image do |f| %>
+  <%= f.input :web_url, label: false%>
+  <%= f.button :submit, 'Submit' %>
+<% end %>
+
+<%= link_to 'Back to Home', root_path %>
