@@ -11,6 +11,44 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select '#new_image'
   end
 
+  def test_index
+    get images_path
+
+    assert_response :ok
+    assert_select 'h1', 'All Images'
+    assert_select 'ul'
+
+    assert_select 'a', 'Submit Image'
+    assert_select 'a', 'Home'
+  end
+
+  def test_index_image_order
+    url1 = 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg'
+    url2 = 'https://i.pinimg.com/474x/b4/bb/eb/b4bbeb2aaafd59040e56df10ad885b40.jpg'
+    url3 = 'https://img.apmcdn.org/5d9c531be5686d2572bcab206df39a230c44f642/uncropped/a85434-20161213-cat.jpg'
+    Image.create!(web_url: url1)
+    Image.create!(web_url: url2)
+    Image.create!(web_url: url3)
+
+    get images_path
+    assert_response :ok
+
+    assert_select 'ul', 1
+    assert_select 'li', 3
+
+    assert_select 'li:nth-child(1)' do
+      assert_select format('img[src="%<url>s"]', url: url3)
+    end
+
+    assert_select 'li:nth-child(2)' do
+      assert_select format('img[src="%<url>s"]', url: url2)
+    end
+
+    assert_select 'li:nth-child(3)' do
+      assert_select format('img[src="%<url>s"]', url: url1)
+    end
+  end
+
   def test_show
     @image = Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
 

@@ -3,6 +3,10 @@ class ImagesController < ApplicationController
     @image = Image.new
   end
 
+  def index
+    @images = Image.all
+  end
+
   def show
     @image = Image.find(params[:id])
   end

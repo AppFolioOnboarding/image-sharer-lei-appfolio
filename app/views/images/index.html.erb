@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<h1>All Images</h1>
+
+<ul>
+  <% @images.reverse.each do |image| %>
+    <li>
+      <img src="<%= image.web_url %>" width="300">
+    </li>
+  <% end %>
+</ul>
+
+<p>
+  <%= link_to 'Submit Image', new_image_path %>
+</p>
+
+<p>
+  <%= link_to 'Home', root_path %>
+</p>
