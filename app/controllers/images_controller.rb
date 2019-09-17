@@ -25,6 +25,6 @@ class ImagesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def image_params
-    params.require(:image).permit(:web_url)
+    params.require(:image).permit(:web_url, :mytag_list)
   end
 end

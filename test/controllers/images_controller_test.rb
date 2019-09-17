@@ -80,6 +80,20 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to image_path(Image.last)
     assert_equal 'Image url was successfully submitted.', flash[:notice]
+
+    assert_equal [], Image.last.mytag_list
+  end
+
+  def test_create__tags
+    assert_difference('Image.count', 1) do
+      image_params = { web_url: 'https://imgur.com/gallery/Lz2m84C', mytag_list: 'cute, cat' }
+      post images_path, params: { image: image_params }
+    end
+
+    assert_redirected_to image_path(Image.last)
+    assert_equal 'Image url was successfully submitted.', flash[:notice]
+
+    assert_equal %w[cute cat], Image.last.mytag_list
   end
 
   def test_create__fail
