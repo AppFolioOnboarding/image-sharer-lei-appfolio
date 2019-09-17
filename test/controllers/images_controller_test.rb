@@ -9,6 +9,9 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select '.new_image'
     assert_select '.simple_form'
     assert_select '#new_image'
+
+    assert_select 'a', 'All Images'
+    assert_select 'a', 'Home'
   end
 
   def test_index
@@ -57,7 +60,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_select 'strong', 'url:'
     assert_select 'img'
-    assert_select 'a', 'Back to Home'
+    assert_select 'a', 'All Images'
+    assert_select 'a', 'Home'
   end
 
   def test_create__succeed
