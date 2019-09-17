@@ -7,6 +7,11 @@ AllCops:
     - 'node_modules/**/*'
     - 'bin/*'
     - 'config/initializers/simple_form.rb'
+    - 'db/migrate/20190917005721_acts_as_taggable_on_migration.acts_as_taggable_on_engine.rb'
+    - 'db/migrate/20190917005722_add_missing_unique_indices.acts_as_taggable_on_engine.rb'
+    - 'db/migrate/20190917005724_add_missing_taggable_index.acts_as_taggable_on_engine.rb'
+    - 'db/migrate/20190917005725_change_collation_for_tag_names.acts_as_taggable_on_engine.rb'
+    - 'db/migrate/20190917005726_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb'
   TargetRubyVersion: 2.5
 
 Layout/IndentFirstArrayElement:
