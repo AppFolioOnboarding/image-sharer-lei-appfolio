@@ -7,6 +7,16 @@
 
 <p>
   <img src="<%= @image.web_url %>" width="300">
+
+  <% if @image.mytag_list.empty? %>
+    <br><strong id="have_no_tag"> (This image does not have tags.) </strong>
+<% else %>
+    <ul>
+      <% @image.mytag_list.each do |tag| %>
+        <li class="my_tag"> <%= tag %> </li>
+      <% end %>
+    </ul>
+  <% end %>
 </p>
 
 <p>
