@@ -8,7 +8,15 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 'New Image URL'
     assert_select '.new_image'
     assert_select '.simple_form'
-    assert_select '#new_image'
+
+    assert_select '.images_form_1', 2
+
+    assert_select '#new_image', 1
+    assert_select '#new_image' do
+      assert_select '.image_web_url'
+      assert_select '.image_mytag_list'
+      assert_select '.btn'
+    end
 
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
