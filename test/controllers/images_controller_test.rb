@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ImagesControllerTest < ActionDispatch::IntegrationTest
+class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable Metrics/ClassLength
   def test_new
     get new_image_path
 
@@ -33,6 +33,38 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a', 'Home'
   end
 
+  def test_index__tags
+    @image = Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg',
+                           mytag_list: 'cute, cat')
+    get images_path
+
+    assert_response :ok
+    assert_select 'h1', 'All Images'
+    assert_select 'ul'
+
+    assert_select '.index_have_no_tag', false
+    assert_select 'li.index_my_tag', 'cute'
+    assert_select 'li.index_my_tag', 'cat'
+
+    assert_select 'a', 'Submit Image'
+    assert_select 'a', 'Home'
+  end
+
+  def test_index__no_tag
+    @image = Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
+    get images_path
+
+    assert_response :ok
+    assert_select 'h1', 'All Images'
+    assert_select 'ul'
+
+    assert_select '.index_have_no_tag'
+    assert_select 'strong', '(This image does not have tags.)'
+
+    assert_select 'a', 'Submit Image'
+    assert_select 'a', 'Home'
+  end
+
   def test_index_image_order
     url1 = 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg'
     url2 = 'https://i.pinimg.com/474x/b4/bb/eb/b4bbeb2aaafd59040e56df10ad885b40.jpg'
@@ -44,19 +76,10 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get images_path
     assert_response :ok
 
-    assert_select 'ul', 1
-    assert_select 'li', 3
-
-    assert_select 'li:nth-child(1)' do
-      assert_select format('img[src="%<url>s"]', url: url3)
-    end
-
-    assert_select 'li:nth-child(2)' do
-      assert_select format('img[src="%<url>s"]', url: url2)
-    end
-
-    assert_select 'li:nth-child(3)' do
-      assert_select format('img[src="%<url>s"]', url: url1)
+    assert_select 'img' do |element|
+      assert_equal url3, element[0][:src]
+      assert_equal url2, element[1][:src]
+      assert_equal url1, element[2][:src]
     end
   end
 
