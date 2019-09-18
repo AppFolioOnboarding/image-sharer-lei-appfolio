@@ -51,6 +51,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'Submit Image'
     assert_select 'a', 'Home'
+
+    assert_select 'a', text: 'Delete', count: 1
   end
 
   def test_index__no_tag
@@ -84,6 +86,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
       assert_equal url2, element[1][:src]
       assert_equal url1, element[2][:src]
     end
+
+    assert_select 'a', text: 'Delete', count: 3
   end
 
   def test_index__search_tag
@@ -104,6 +108,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
       assert_equal url2, element[0][:src]
       assert_equal url1, element[1][:src]
     end
+
+    assert_select 'a', text: 'Delete', count: 2
 
     assert_select 'li.index_my_tag', text: 'cute', count: 1
     assert_select 'li.index_my_tag', text: 'cat', count: 2
@@ -182,6 +188,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
+
+    assert_select 'a', text: 'Delete', count: 1
   end
 
   def test_show__has_tags
@@ -203,6 +211,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
+
+    assert_select 'a', text: 'Delete', count: 1
   end
 
   def test_create__succeed
@@ -257,6 +267,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
       assert_equal url1, element[2][:src]
     end
 
+    assert_select 'a', text: 'Delete', count: 3
+
     delete image_path(@image.id)
 
     assert_response :found
@@ -272,5 +284,6 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
     end
 
     assert_equal 'Image url was successfully deleted.', flash[:notice]
+    assert_select 'a', text: 'Delete', count: 2
   end
 end
