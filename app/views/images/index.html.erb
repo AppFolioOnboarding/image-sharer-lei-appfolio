@@ -1,9 +1,9 @@
 <p id="notice"><%= notice %></p>
 
-<h1>All Images</h1>
+<h1> <%= @index_view_model.index_page_title %> </h1>
 
 <ul>
-  <% @images.reverse.each do |image| %>
+  <% @reversed_images.each do |image| %>
     <li>
       <img src="<%= image.web_url %>" width="300">
 
@@ -12,8 +12,10 @@
       <% else %>
         <ul>
           <% image.mytag_list.each do |tag| %>
-            <li class="index_my_tag"> <%= tag %> </li>
-          <% end %>
+            <li class="index_my_tag">
+              <%= link_to tag,  images_path(search_tag: tag) %>
+            </li>
+        <% end %>
         </ul>
       <% end %>
 
@@ -25,6 +27,12 @@
 <p>
   <%= link_to 'Submit Image', new_image_path %>
 </p>
+
+<% unless @index_view_model.search_tag_blank? %>
+  <p>
+    <%=  link_to 'All Images', images_path %>
+  </p>
+<% end %>
 
 <p>
   <%= link_to 'Home', root_path %>
