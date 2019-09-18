@@ -10,10 +10,12 @@
 
   <% if @image.mytag_list.empty? %>
     <br><strong id="have_no_tag"> (This image does not have tags.) </strong>
-<% else %>
+  <% else %>
     <ul>
       <% @image.mytag_list.each do |tag| %>
-        <li class="my_tag"> <%= tag %> </li>
+        <li class="my_tag">
+          <%= link_to tag, images_path(search_tag: tag) %>
+        </li>
       <% end %>
     </ul>
   <% end %>

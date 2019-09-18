@@ -198,6 +198,9 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
     assert_select 'li.my_tag', 'cute'
     assert_select 'li.my_tag', 'cat'
 
+    assert_select 'a[href=\/images\?search_tag\=cute]'
+    assert_select 'a[href=\/images\?search_tag\=cat]'
+
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
   end
