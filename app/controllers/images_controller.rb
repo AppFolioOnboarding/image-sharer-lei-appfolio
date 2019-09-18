@@ -24,6 +24,12 @@ class ImagesController < ApplicationController
     end
   end
 
+  def destroy
+    @image = Image.find(params[:id])
+    @image.destroy!
+    redirect_to images_path, notice: 'Image url was successfully deleted.'
+  end
+
   private
 
   # Only allow a trusted parameter "white list" through.
