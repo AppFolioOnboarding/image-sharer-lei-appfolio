@@ -4,7 +4,10 @@ class ImagesController < ApplicationController
   end
 
   def index
-    @images = Image.all
+    search_tag = search_tag_params[:search_tag]
+    @index_view_model = ImagesIndexView.new(search_tag: search_tag)
+    images = search_tag.blank? ? Image.all : Image.tagged_with(search_tag)
+    @reversed_images = images.reverse
   end
 
   def show
@@ -26,5 +29,9 @@ class ImagesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def image_params
     params.require(:image).permit(:web_url, :mytag_list)
+  end
+
+  def search_tag_params
+    params.permit(:search_tag)
   end
 end
