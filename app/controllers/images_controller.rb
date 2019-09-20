@@ -32,7 +32,7 @@ class ImagesController < ApplicationController
   end
 
   def destroy
-    @image = Image.find(params[:id])
+    @image = Image.find_by_id(params[:id])
     @image.destroy!
     flash[:notice] = 'Image url was successfully deleted.'
     redirect_to images_path
