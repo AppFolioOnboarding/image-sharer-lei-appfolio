@@ -8,16 +8,15 @@ class ImagesCrudTest < FlowTestCase
 
     tags = %w[foo bar]
     new_image_page = new_image_page.create_image!(
-      url: 'invalid',
-      tags: tags.join(', ')
+      web_url: 'invalid',
+      mytag_list: tags.join(', ')
     ).as_a(PageObjects::Images::NewPage)
-    assert_equal 'must be a valid URL', new_image_page.url.error_message
-
+    assert_equal 'is an invalid URL', new_image_page.web_url.error_message
     image_url = 'https://media3.giphy.com/media/EldfH1VJdbrwY/200.gif'
-    new_image_page.url.set(image_url)
+    new_image_page.web_url.set(image_url)
 
     image_show_page = new_image_page.create_image!
-    assert_equal 'You have successfully added an image.', image_show_page.flash_message(:success)
+    assert_equal 'Image url was successfully submitted.', image_show_page.notice_message
 
     assert_equal image_url, image_show_page.image_url
     assert_equal tags, image_show_page.tags
@@ -30,17 +29,17 @@ class ImagesCrudTest < FlowTestCase
     cute_puppy_url = 'http://ghk.h-cdn.co/assets/16/09/980x490/landscape-1457107485-gettyimages-512366437.jpg'
     ugly_cat_url = 'http://www.ugly-cat.com/ugly-cats/uglycat041.jpg'
     Image.create!([
-      { url: cute_puppy_url, tag_list: 'puppy, cute' },
-      { url: ugly_cat_url, tag_list: 'cat, ugly' }
+      { web_url: cute_puppy_url, mytag_list: 'puppy, cute' },
+      { web_url: ugly_cat_url, mytag_list: 'cat, ugly' }
     ])
 
     images_index_page = PageObjects::Images::IndexPage.visit
-    assert_equal 2, images_index_page.images.count
+    assert_equal 2, images_index_page.all_images.count
     assert images_index_page.showing_image?(url: ugly_cat_url)
     assert images_index_page.showing_image?(url: cute_puppy_url)
 
-    image_to_delete = images_index_page.images.find do |image|
-      image.url == ugly_cat_url
+    image_to_delete = images_index_page.all_images.find do |image|
+      image.web_url == ugly_cat_url
     end
     image_show_page = image_to_delete.view!
 
@@ -50,9 +49,9 @@ class ImagesCrudTest < FlowTestCase
     end
 
     images_index_page = image_show_page.delete_and_confirm!
-    assert_equal 'You have successfully deleted the image.', images_index_page.flash_message(:success)
+    assert_equal 'Image url was successfully deleted.', images_index_page.notice_message
 
-    assert_equal 1, images_index_page.images.count
+    assert_equal 1, images_index_page.all_images.count
     assert_not images_index_page.showing_image?(url: ugly_cat_url)
     assert images_index_page.showing_image?(url: cute_puppy_url)
   end
@@ -62,9 +61,9 @@ class ImagesCrudTest < FlowTestCase
     puppy_url2 = 'http://ghk.h-cdn.co/assets/16/09/980x490/landscape-1457107485-gettyimages-512366437.jpg'
     cat_url = 'http://www.ugly-cat.com/ugly-cats/uglycat041.jpg'
     Image.create!([
-      { url: puppy_url1, tag_list: 'superman, cute' },
-      { url: puppy_url2, tag_list: 'cute, puppy' },
-      { url: cat_url, tag_list: 'cat, ugly' }
+      { web_url: puppy_url1, mytag_list: 'superman, cute' },
+      { web_url: puppy_url2, mytag_list: 'cute, puppy' },
+      { web_url: cat_url, mytag_list: 'cat, ugly' }
     ])
 
     images_index_page = PageObjects::Images::IndexPage.visit
@@ -72,12 +71,12 @@ class ImagesCrudTest < FlowTestCase
       assert images_index_page.showing_image?(url: url)
     end
 
-    images_index_page = images_index_page.images[1].click_tag!('cute')
+    images_index_page = images_index_page.all_images[1].click_tag!('cute')
 
-    assert_equal 2, images_index_page.images.count
+    assert_equal 2, images_index_page.all_images.count
     assert_not images_index_page.showing_image?(url: cat_url)
 
     images_index_page = images_index_page.clear_tag_filter!
-    assert_equal 3, images_index_page.images.count
+    assert_equal 3, images_index_page.all_images.count
   end
 end
