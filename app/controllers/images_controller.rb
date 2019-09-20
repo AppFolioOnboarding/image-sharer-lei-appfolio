@@ -11,7 +11,13 @@ class ImagesController < ApplicationController
   end
 
   def show
-    @image = Image.find(params[:id])
+    @image = Image.find_by_id(params[:id])
+    # This is different from `@image = Image.find(params[:id])`
+    # It assigns nil to @image when the id is not found
+    # But `Image.find(params[:id])` throws an exception
+
+    flash[:notice] = 'Image url is not found.' if @image.nil?
+    redirect_to images_path if @image.nil?
   end
 
   def create

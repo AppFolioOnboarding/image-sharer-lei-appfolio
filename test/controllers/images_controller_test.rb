@@ -189,7 +189,16 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
 
+    assert_select '#js-delete'
     assert_select 'a', text: 'Delete', count: 1
+  end
+
+  def test_show__no_record
+    Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
+    get image_path(125)
+
+    assert_redirected_to images_path
+    assert_equal 'Image url is not found.', flash[:notice]
   end
 
   def test_show__has_tags
@@ -212,6 +221,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
 
+    assert_select '#js-delete'
     assert_select 'a', text: 'Delete', count: 1
   end
 
