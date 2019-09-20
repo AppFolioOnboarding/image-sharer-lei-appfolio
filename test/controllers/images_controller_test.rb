@@ -296,4 +296,12 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
     assert_equal 'Image url was successfully deleted.', flash[:notice]
     assert_select 'a', text: 'Delete', count: 2
   end
+
+  def test_destroy__no_record
+    Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
+
+    delete image_path(372)
+    assert_redirected_to images_path
+    assert_equal 'Image url is not found.', flash[:notice]
+  end
 end
