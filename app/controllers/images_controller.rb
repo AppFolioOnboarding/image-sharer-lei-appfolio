@@ -11,17 +11,35 @@ class ImagesController < ApplicationController
   end
 
   def show
-    @image = Image.find(params[:id])
+    @image = Image.find_by_id(params[:id])
+    # This is different from `@image = Image.find(params[:id])`
+    # It assigns nil to @image when the id is not found
+    # But `Image.find(params[:id])` throws an exception
+
+    flash[:notice] = 'Image url is not found.' if @image.nil?
+    redirect_to images_path if @image.nil?
   end
 
   def create
     @image = Image.new(image_params)
 
     if @image.save
-      redirect_to @image, notice: 'Image url was successfully submitted.'
+      flash[:notice] = 'Image url was successfully submitted.'
+      redirect_to @image
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @image = Image.find_by_id(params[:id])
+    if @image.nil?
+      flash[:notice] = 'Image url is not found.'
+    else
+      @image.destroy!
+      flash[:notice] = 'Image url was successfully deleted.'
+    end
+    redirect_to images_path
   end
 
   private

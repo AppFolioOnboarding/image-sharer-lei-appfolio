@@ -51,6 +51,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'Submit Image'
     assert_select 'a', 'Home'
+
+    assert_select 'a', text: 'Delete', count: 1
   end
 
   def test_index__no_tag
@@ -84,6 +86,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
       assert_equal url2, element[1][:src]
       assert_equal url1, element[2][:src]
     end
+
+    assert_select 'a', text: 'Delete', count: 3
   end
 
   def test_index__search_tag
@@ -104,6 +108,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
       assert_equal url2, element[0][:src]
       assert_equal url1, element[1][:src]
     end
+
+    assert_select 'a', text: 'Delete', count: 2
 
     assert_select 'li.index_my_tag', text: 'cute', count: 1
     assert_select 'li.index_my_tag', text: 'cat', count: 2
@@ -182,6 +188,17 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
+
+    assert_select '#js-delete'
+    assert_select 'a', text: 'Delete', count: 1
+  end
+
+  def test_show__no_record
+    Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
+    get image_path(125)
+
+    assert_redirected_to images_path
+    assert_equal 'Image url is not found.', flash[:notice]
   end
 
   def test_show__has_tags
@@ -203,6 +220,9 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_select 'a', 'All Images'
     assert_select 'a', 'Home'
+
+    assert_select '#js-delete'
+    assert_select 'a', text: 'Delete', count: 1
   end
 
   def test_create__succeed
@@ -237,5 +257,51 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest # rubocop:disable M
 
     assert_response :unprocessable_entity
     assert_select 'span', 'is an invalid URL'
+  end
+
+  def test_index__destroy
+    url1 = 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg'
+    url2 = 'https://i.pinimg.com/474x/b4/bb/eb/b4bbeb2aaafd59040e56df10ad885b40.jpg'
+    url3 = 'https://img.apmcdn.org/5d9c531be5686d2572bcab206df39a230c44f642/uncropped/a85434-20161213-cat.jpg'
+    Image.create!(web_url: url1, mytag_list: 'cute, cat')
+    @image = Image.create!(web_url: url2, mytag_list: 'cat, dog')
+    Image.create!(web_url: url3, mytag_list: 'cute, panda')
+
+    get images_path
+    assert_response :ok
+
+    assert_select 'img', 3
+    assert_select 'img' do |element|
+      assert_equal url3, element[0][:src]
+      assert_equal url2, element[1][:src]
+      assert_equal url1, element[2][:src]
+    end
+
+    assert_select 'a', text: 'Delete', count: 3
+
+    delete image_path(@image.id)
+
+    assert_response :found
+    assert_redirected_to images_path
+
+    get images_path
+    assert_response :ok
+
+    assert_select 'img', 2
+    assert_select 'img' do |element|
+      assert_equal url3, element[0][:src]
+      assert_equal url1, element[1][:src]
+    end
+
+    assert_equal 'Image url was successfully deleted.', flash[:notice]
+    assert_select 'a', text: 'Delete', count: 2
+  end
+
+  def test_destroy__no_record
+    Image.create!(web_url: 'https://i.pinimg.com/originals/3a/42/a6/3a42a627c2da4dc93c1698e86a124bd1.jpg')
+
+    delete image_path(372)
+    assert_redirected_to images_path
+    assert_equal 'Image url is not found.', flash[:notice]
   end
 end

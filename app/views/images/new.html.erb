@@ -1,8 +1,8 @@
 <h1>New Image URL</h1>
 
 <%= simple_form_for @image, :defaults => { :input_html => { :class => "images_form_1" } }  do |f| %>
-  <%= f.input :web_url, label: 'URL:'%>
-  <%= f.input :mytag_list, label: 'Tags:', hint: '(Use comma for multiple tags.)'%>
+  <%= f.input :web_url, label: 'URL:' %>
+  <%= f.input :mytag_list, input_html: {value: f.object.mytag_list.join(', ')}, label: 'Tags:', hint: '(Use comma for multiple tags.)' %>
   <%= f.button :submit, 'Submit' %>
 <% end %>
 
