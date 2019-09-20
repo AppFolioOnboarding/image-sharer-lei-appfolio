@@ -1,7 +1,7 @@
 module PageObjects
   class Document < AePageObjects::Document
-    def notice_message
-      node.find('#notice').text
+    def flash_message(message_type)
+      return node.find('#notice').text if message_type == :notice
     end
   end
 end

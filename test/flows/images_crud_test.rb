@@ -16,7 +16,7 @@ class ImagesCrudTest < FlowTestCase
     new_image_page.web_url.set(image_url)
 
     image_show_page = new_image_page.create_image!
-    assert_equal 'Image url was successfully submitted.', image_show_page.notice_message
+    assert_equal 'Image url was successfully submitted.', image_show_page.flash_message(:notice)
 
     assert_equal image_url, image_show_page.image_url
     assert_equal tags, image_show_page.tags
@@ -49,7 +49,7 @@ class ImagesCrudTest < FlowTestCase
     end
 
     images_index_page = image_show_page.delete_and_confirm!
-    assert_equal 'Image url was successfully deleted.', images_index_page.notice_message
+    assert_equal 'Image url was successfully deleted.', images_index_page.flash_message(:notice)
 
     assert_equal 1, images_index_page.all_images.count
     assert_not images_index_page.showing_image?(url: ugly_cat_url)

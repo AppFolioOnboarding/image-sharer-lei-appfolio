@@ -18,7 +18,8 @@ class ImagesController < ApplicationController
     @image = Image.new(image_params)
 
     if @image.save
-      redirect_to @image, notice: 'Image url was successfully submitted.'
+      flash[:notice] = 'Image url was successfully submitted.'
+      redirect_to @image
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +28,8 @@ class ImagesController < ApplicationController
   def destroy
     @image = Image.find(params[:id])
     @image.destroy!
-    redirect_to images_path, notice: 'Image url was successfully deleted.'
+    flash[:notice] = 'Image url was successfully deleted.'
+    redirect_to images_path
   end
 
   private
